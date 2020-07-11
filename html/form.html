@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block 'title' %}
+{{ page_title }}
+{% endblock %}
+
+{% block 'head-extends' %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block 'content' %}
+	<div class="container" style="position: relative;top: 50px;width: 400px;">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+	    	<h3 class="panel-title">{{ panel_title }}</h3>
+	    </div>
+	    <div class="panel-body">
+	    	<form id='form-form' action="" method="POST">
+				{% csrf_token %}
+				{% for field in form %}
+					<label>{{ field.label }}</label>
+					{{ field }}
+					<br>
+				{% endfor %}
+				<div class="pull-left">
+					{% block 'other-button' %}
+					{% endblock %}
+				</div>
+
+				<span id="error_text" class="pull-left text-danger">{{ wrong }}</span>
+				<input id='submit' style="position: relative;" type="submit" value="{{ submit_text }}" class="btn btn-primary pull-right"/>
+
+			</form>
+	  	</div>
+	</div>
+	<!--form style="width: 60%;margin: auto;height: 400px;">
+		{% for label in login_form %}
+			{{ label }}
+		{% endfor %}
+	</form-->
+{% endblock %}
+
+{% block 'script-extends' %}{% endblock %}

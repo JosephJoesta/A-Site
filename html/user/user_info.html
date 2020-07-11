@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block 'title' %}
+{{ request.user.username }}的个人空间
+{% endblock %}
+
+{% block 'head-extends' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/user_info.css' %}" >
+<link rel="stylesheet" type="text/css" href="{% static 'css/article/articlepage.css' %}" />
+<link rel="stylesheet" type="text/css" href="../../../static/bootstrap/css/bootstrap.min.css" >
+
+{% endblock %}
+ 
+{% block 'content' %}
+<div class="user_info">
+	{% if request.user.is_authenticated %}
+		<h2>个人</h2>
+		<p>昵称： {{ request.user.profile.nickname }}</p>
+		<p>邮箱： {% if request.user.email %}<span>{{ request.user.email }}</span>{% else %}未绑定{% endif %}
+		<p>上次登陆时间：{{ request.user.last_login }}</p>
+
+		<br>
+
+		<p>账号：{{ request.user.username }}</p>
+		<p>密码：修改密码</p>
+		<br>
+	{% else %}
+		<br>
+		<span style="margin-left: -25px;">未登陆,跳转至首页...</span>
+		<script type="text/javascript">
+			window.location.href = '/';
+		</script>
+	{% endif %}
+</div>
+{% endblock %}

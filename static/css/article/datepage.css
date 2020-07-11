@@ -1,0 +1,97 @@
+/*标签样式*/
+a {
+	color: #222222;
+	margin: 5px;
+}
+
+p {
+	line-height: 15px;
+	margin: 5px;
+	margin-bottom: 0px;
+}
+
+/*全局样式*/
+#main {
+	width: 95%;
+
+	margin-left: 5%;
+	margin-right: auto;
+
+	margin-top: 30px;
+}
+
+/*div#new样式*/
+#div-new {
+	padding: 0px;
+
+	width: 29%;
+	min-width: 150px;
+
+	display: inline-block;
+	vertical-align:top;
+}
+
+#new-head p{
+	margin-bottom: 0px;
+}
+
+#new-body {
+	width: 100%;
+	padding: 0px;
+
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space: nowrap;
+}
+
+
+/*div#type样式*/
+#div-type {
+	padding: 0px;
+
+	width: 10%;
+	min-width: 85px;
+
+	margin-left: 5%;
+	margin-right: 5%;
+
+	display: inline-block;
+	vertical-align:top;
+}
+
+#type-body {
+	width: 100%;
+
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space: nowrap;
+}
+
+#type-head p{
+	margin-bottom: 0px;
+}
+/*div#date样式*/
+#div-date {
+	width: 17%;
+	min-width: 115px;
+
+	display: inline-block;
+	vertical-align:top;
+}
+
+#date-head {
+	width: 100%;
+}
+
+#date-body {
+	width: 100%;
+
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space: nowrap;
+}
+
+hr {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}

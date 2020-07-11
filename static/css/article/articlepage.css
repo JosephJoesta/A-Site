@@ -1,0 +1,188 @@
+nav {
+}
+
+.like {
+	cursor: pointer;
+}
+
+
+#inserted p {
+	display: inline;
+}
+
+h1 {
+	text-align: justify;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 20px;
+	font-size: 28px;
+}
+
+#content p {
+	width: 100%;
+	text-indent: 2em;
+	font-size: 18px;
+	font-weight: lighter;
+	margin-bottom: 1.8em;
+
+	text-align: justify;
+}
+
+#article-content {
+	width: 60%;
+	margin-top: 50px;
+	margin-left: auto;
+	margin-right: auto;
+	text-indent: 2em;
+
+	padding:5px; 
+}
+
+
+#content img{
+	width: 100%!important;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+
+/* Comment */
+
+div#comment {
+	width: 70%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+div#comment_platform {
+	width: 100%;
+	max-height: 150px;
+}
+
+
+div#comment_public {
+	width: 100%;
+	min-height:250px; 
+}
+
+.comment {
+	width: 100%;
+}
+/*
+.head-img {
+	width: 5vw;
+	height: 5vw;
+
+	border-radius: 50%;
+
+	background-image: url(../../image/earth.png);
+	background-repeat:no-repeat;
+	background-size:100% 100%;
+	-moz-background-size:100% 100%;
+
+	display: inline-block;
+	vertical-align:top;
+	margin-right: 2vw;
+}
+*/
+.comment_text {
+	width: 75%;
+	display: inline-block;
+	vertical-align:top;
+}
+
+.django-ckeditor-widget {
+	width: 67%;
+	height: 150%;
+	margin: auto;
+}
+
+#comment_button {
+	display: block;
+	float:right!important;
+	text-decoration: none;
+	color: #fff;
+
+	background-color: rgb(45,120,180);
+	border-radius: 5px;
+	padding: 6px 12px;
+}
+
+.replys {
+	margin-left: 7vw;
+}
+.replys p {
+	display: inline;
+}
+@media (max-width: 767px) {
+	nav {
+		padding: 18px;
+	}
+
+	#article-head h1 {
+		color: #222;
+		text-indent: 0px;
+		line-height: 1.2em;
+		text-align: justify;
+		font-size: 2rem;
+		margin-top: 1em;
+	}
+
+	#article-head p{
+		color: #888;
+		font-size: 14px;
+		text-indent: 2em;
+
+	}
+
+	#article-head a{
+		color: inherit;
+	}
+
+	#content p{
+		font-size: 16px;
+		margin-bottom: 1.2em;
+	}
+
+	#article-content {
+		width: 90%;
+	}
+
+	/*.head-img {
+		width: 8vw;
+		height: 8vw;
+
+		border-radius: 50%;
+
+		background-image: url(../../image/earth.png);
+		background-repeat:no-repeat;
+		background-size:100% 100%;
+		-moz-background-size:100% 100%;
+
+		display: inline-block;
+		vertical-align:top;
+		margin-right: 2vw;
+	}*/
+}
+
+@media (max-width: 400px) {
+	.head-img {
+		width: 10vw;
+		height: 10vw;
+	}
+
+	.comment_text p {
+		font-size: 13px;
+	}
+}
+
+#alert_login {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.liked-num {
+	margin-right: 0.5em;
+}

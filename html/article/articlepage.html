@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load article_tags %}
+{% load like_tags  %}
+{% block 'title' %}新闻|{{article.title}}{% endblock %}
+
+
+{% block 'head-extends' %}
+
+	<link rel="stylesheet" type="text/css" href="{% static 'css/article/articlepage.css' %}" />
+	<link rel="stylesheet" type="text/css" href="../../../static/bootstrap/css/bootstrap.min.css">
+
+	<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}" ></script>
+	<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}" ></script>
+	<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+	<style type="text/css">
+		.ln {
+			text-align: center;
+			color: #262626;
+		}
+		a {
+			color: #262626;
+			text-decoration: none;
+		}
+		a:hover {
+			text-decoration: underline;
+		}
+	</style>
+
+{% endblock %}
+
+
+{% block 'content' %}
+	<div id='article-content'>
+		<div id="article-head">
+			<h1>{{ article.title }}</h1>
+
+			<p>
+				<a href="{% url 'article_type' article.article_type.id %}">{{ article.article_type.type_name }}</a>
+				<span>阅读数({{ article.display_num }})</span>
+				<span>&nbsp;&nbsp;{{ article.created_time|date:'Y-m-d H:i' }}</span>
+				<span onclick="likeChange(this,'article',{{ article.id }});" class="glyphicon glyphicon-thumbs-up" style="color: rgb(52,122,182);position: relative;top: 1px;cursor: pointer;"></span>
+				<span id="liked_article_{{ article.id }}" class="liked_num" style="color: rgb(52,122,182);">{% get_like_num article %}</span>
+			</p>
+		</div>
+
+		<hr/>
+		<div id="content">
+			{{ article.content|safe }}
+		</div>
+		<br />
+
+		<p class="ln" style="font-size: 16px;">上一编:
+			{% if last_article.title %}
+				<a href="{% url 'article_article' last_article.id %}">{{ last_article.title }}</a>
+			{% else %}
+				<a style="text-decoration: none;">没有了</a>
+			{% endif %}
+			</a>
+		</p>
+
+		<p class="ln" style="font-size: 16px;">下一编:
+			{% if next_article.title %}
+				<a href="{% url 'article_article' next_article.id %}">{{ next_article.title }}</a>
+			{% else %}
+				<a style="text-decoration: none;">没有了</a>
+			{% endif %}
+		</p>
+	</div>
+
+	<div id="comment">
+		<div id="comment_platform" style="height: 70px;">
+			<div class="comment-head">
+				<p style="color:#545454;position: relative;top:15px;font-weight: bold;font-size: 20px;" >提交评论</p>
+				<hr />
+			</div>
+		</div>
+		<div id="comment-area">
+			{% if user.is_authenticated %}
+				<form id="comment-form" action="{% url 'update_comment' %}" method="POST">
+					{% csrf_token %}
+					{% for comment in comment_form %}
+						{{ comment }}
+					{% endfor %}
+					<br>
+					<input class='btn btn-primary pull-right' type="submit" value="提交">
+				</form>
+			{% else %}
+				<p>你还未登陆,登陆后即可评论&nbsp;&nbsp;<a class="btn btn-primary" href="{% url 'login' %}">登陆</a> <a class="btn btn-danger" href="{% url 'register' %}">注册</a></p>
+			{% endif %}
+		</div>
+		<div id="comment_public">
+			<div class="comment-head">
+				<p style="color:#545454;position: relative;top:15px;font-weight: bold;font-size: 20px;" >评论列表</p>
+				<hr />
+			</div>
+
+			<div id="insert"></div>
+			{% for comment in comments %}
+				<div class="comment">
+					<div class="head-img">
+					</div>
+					<div class='comment_text'>
+						<p style="color:rgb(109,117,122);">{{ comment.user.profile.nickname }}</p>
+						<p>{{ comment.text|safe }}</p>
+						<p>
+							<span style="color: rgb(153,162,170);font-size: 12px;">{{ comment.comment_time }}&nbsp;</span>
+							<span onclick="likeChange(this,'comment',{{ comment.id }});" class="glyphicon glyphicon-thumbs-up" style="color: rgb(153,162,170);position: relative;top: 1px;cursor: pointer;"></span>
+							<span id="liked_comment_{{ comment.id }}" class="liked-num" style="color: rgb(153,162,170);">{% get_like_num comment %}</span>
+
+							<a href="javascript:reply({{ comment.id }})" style="color: rgb(153,162,170);">回复</a>
+						</p>
+					</div>
+					<div class="replys">
+						<div id="reply_{{ comment.id }}">
+						</div>
+						{% for reply in comment.replys.all %}
+							<div class="head-img" style="height: 2vw;width: 2vw;margin-right: 0px;">
+							</div>
+							<div style="width: 75%;display: inline-block;vertical-align:top;">
+								<p style="color:rgb(109,117,122);">{{ reply.user.profile.nickname }} 回复 {{ reply.reply_object.profile.nickname }}&nbsp;&nbsp;&nbsp;{{ reply.text|safe }}</p>
+								<br>
+								<p>
+									<span style="color: rgb(153,162,170);font-size: 12px;">{{ reply.comment_time }}&nbsp;</span>
+									<span onclick="likeChange(this,'comment',{{ reply.id }});" class="glyphicon glyphicon-thumbs-up" style="color: rgb(153,162,170);position: relative;top: 1px;cursor: pointer;"></span>
+									<span id="liked_comment_{{ reply.id }}" style="color: rgb(153,162,170);">{% get_like_num reply %}</span>
+
+									<a href="javascript:reply({{ reply.id }})" style="color: rgb(153,162,170);">回复</a>
+									<div id='reply_{{ reply.id }}'>
+									</div>
+								</p>
+							</div>
+							<div id='reply_{{ reply.id }}'>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+				<hr>
+			{% empty %}
+				<p id="no_comment">暂无评论</p>
+			{% endfor %}
+		</div>
+	</div>
+
+
+	<!-- Small modal -->
+	<div id='login_modal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			   	<form id="alert_login" action="" method="POST">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" id="gridSystemModalLabel">登陆</h4>
+					</div>
+					<br>
+					<div class="model-mainer">
+						{% csrf_token %}
+						{% for field in login_form %}
+							<label>{{ field.label }}</label>
+							{{ field }}
+							<br>
+						{% endfor %}
+						<p id="wrong-text" style="color: red;"></p>
+					</div>
+					<br>
+					<div class="modal-footer">
+						<input type="submit" class='btn btn-primary' value="提交">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+	<script type="text/javascript">
+		String.prototype.format = function() {
+			var str = this
+			for (var i = 0 ; i < arguments.length ; i++) {
+				var str = str.replace('{' + i + '}',arguments[i])
+			};
+			return str
+		};
+
+		function numFormat(num) {
+			return ('00' + num).substr(-2);
+		}
+
+		function timeFormat(timestamp){
+			var datetime = new Date(timestamp);
+			var year = datetime.getFullYear()
+			var month = datetime.getMonth() + 1;
+			var day = datetime.getDate();
+			var hour = numFormat(datetime.getHours());
+			var minute = numFormat(datetime.getMinutes());
+			var second = numFormat(datetime.getSeconds());
+			return year + '年' + month + '月' + day + '日' + ' ' + hour + ':' + minute;
+		};
+
+		$('#comment-form').submit(function(data){
+			if (CKEDITOR.instances['id_text'].document.getBody().getText().trim()=='') {
+					$('#comment_error').text('评论内容不能为空');
+					return false;
+			}
+
+			CKEDITOR.instances['id_text'].updateElement();
+			//异步提交
+	        $.ajax({
+				url: "{% url 'update_comment' %}",
+				type: 'POST',
+				data: $(this).serialize(),
+				cache: false,
+				success: function(data){				
+						console.log(data);
+						if(data['status']=='SUCCESS'){
+							if ($('#reply_id').val() == 0) {
+
+								var comment_html = "<div class='head-img'></div><div class='comment_text'><p style='color:rgb(109,117,122);'>{0}</p><p>{1}</p><p><span style='color: rgb(153,162,170);font-size: 12px;'>{2}&nbsp;&nbsp;</span><span onclick=\"likeChange(this,'comment',{3});\" class='glyphicon glyphicon-thumbs-up' style='color: rgb(153,162,170);position: relative;top: 1px;cursor: pointer;'></span><span id='liked_comment_{4}' class='liked-num' style='color: rgb(153,162,170);'> 0</span><a href='javascript:reply({5})' style='color: rgb(153,162,170);'>回复</a><div id='reply_{6}'></div></p><hr>"
+								var comment_html = comment_html.format(data['username'],data['text'],timeFormat(data['comment_time']),data['id'],data['id'],data['id'],data['id'])
+
+
+								$('#insert').prepend(comment_html);
+								CKEDITOR.instances['id_text'].setData('');
+		 						$('#comment_error').text('');
+		 						$("#no_comment").remove();
+							}else{
+								var comment_html = "<div id='inserted' style='margin-left:7vw' >" + "<span style='color:rgb(109,117,122);'>" + data['username'] + "&nbsp;回复&nbsp;" + data['reply_user'] + "</span>&nbsp&nbsp&nbsp" + data['text'] + "<p style='color: rgb(153,162,170);'>" + "<br>" + "<span style='font-size: 12px;'>" + timeFormat(data['comment_time']) + '&nbsp;&nbsp;' + "</span>" + "<span class='glyphicon glyphicon-thumbs-up' style='position: relative;top: 2px;'></span>" + "<a style='color:rgb(153,162,170); ' href='javascript:reply(" + data['id'] + ");'>回复</a>" + "</p>" +"</div>";
+
+								var comment_html = "<div class='head-img' style='height: 2vw;width: 2vw;margin-right: 0px;'></div><div style='width: 75%;display: inline-block;vertical-align:top;'><span style='color:rgb(109,117,122);'>{0} 回复 {1}&nbsp;&nbsp;&nbsp;{2}</span><br><span style='color: rgb(153,162,170);font-size: 12px;'>{3}&nbsp;</span><span onclick=\"likeChange(this,'comment',{4});\" class='glyphicon glyphicon-thumbs-up' style='color: rgb(153,162,170);position: relative;top: 1px;cursor: pointer;'></span><span id='liked_comment_{5}' class='liked-num' style='position:absolute;color: rgb(153,162,170);'>0</span><a href='javascript:reply({6})' style='color: rgb(153,162,170);'>回复</a></p></div>"
+
+									var comment_html = comment_html.format(data['username'],data['reply_user'],data['text'],timeFormat(data['comment_time']),data['id'],data['id'],data['id'])
+
+
+								$('#reply_' + data['parent_id']).append(comment_html);
+								CKEDITOR.instances['id_text'].setData('');
+		 						$('#comment_error').text('');
+							}
+						}
+					},
+					error: function(xhr){
+					}
+				});
+			    return false;
+			});
+
+		function reply(reply_id){
+			var text = '<span>回复: </span>' + $('#comment_' + reply_id).html();
+			$('#reply_id').val(reply_id);
+			$('#insert_message').html(text);
+
+			var text = "<span>回复: </span>" + $('#comment_' + reply_id).html();
+			$('#insert_interval').html(text);
+
+			$('html').animate({scrollTop: $('#comment').offset().top - 100},1500,function(){
+				CKEDITOR.instances['id_text'].focus();
+			});
+		}
+
+		function likeChange(obj,content_type,object_id){
+
+			var is_liked = obj.getElementsByClassName('active').length == 0;
+			$.ajax({
+				url: "{% url 'like_change' %}",
+				type: 'get',
+				data: {
+					'content_type': content_type,
+					'object_id': object_id,
+					'is_liked': is_liked,
+				},
+				cache:false,
+
+				success:function(data){
+					console.log(data)
+
+					if(data['status']=='SUCCESS'){
+						var liked_num = $('#liked_' + content_type + '_' + object_id);
+						liked_num.text(' ' + data['liked_num']);
+					}else{
+						if (data['code']==400){
+							jQuery(document).ready(function($) {
+								$('#login_modal').modal('show')
+   							});
+						}
+					}
+				},
+
+				error:function(data){
+					alert(data)
+				}
+			});
+		}
+
+		$('#alert_login').submit(function(event){
+			event.preventDefault();
+
+			$('#wrong-text').text('');
+			$.ajax({
+				url: "{% url 'alertlogin' %}",
+				type: 'POST',
+				data: $(this).serialize(),
+				cache: false,
+				success:function(data){
+					console.log(data)
+					$('#wrong-text').text('');
+					if (data['status']=='SUCCESS'){
+						window.location.reload();
+					}else{
+						$('#wrong-text').text('用户名或密码不正确');
+					}
+				},
+				error:function(xhr){
+					console.log(xhr)
+				},
+			})
+		});
+	</script>
+{% endblock %}
+
+{% block 'script-extends' %}
+{% endblock %}

@@ -1,0 +1,68 @@
+
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block 'title' %}{% endblock %}
+
+{% block 'head-extends' %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block 'content' %}
+	<div class="container" style="position: relative;top: 50px;width: 400px;">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+	    	<h3 class="panel-title">登录</h3>
+	    </div>
+	    <div class="panel-body">
+	    	<form id='login_form' action="" method="POST">
+				{% csrf_token %}
+				{% for field in login_form %}
+					<label>{{ field.label }}</label>
+					{{ field }}
+					<br>
+				{% endfor %}
+				<span style='color:blue'>&nbsp;&nbsp;<a href="{% url 'find_password' %}">邮箱找回密码</a></span>
+				<span id='error_text' class="pull-left text-danger">{{ wrong }}</span>
+				<input style="position: relative;top: 5px;" type="submit"value="登录" class="btn btn-primary pull-right">
+			</form>
+	  	</div>
+	</div>
+{% endblock %}
+
+{% block 'script-extends' %}
+<script>
+	$.ajaxSetup({
+		data:{ csrfmiddlewaretoken:'{{ csrf_token }}' }
+	})
+	$('#login_form').submit(function(){
+		event.preventDefault()
+		var username = $('#id_username').val();
+		var password = $('#id_password').val();
+		$.ajax({
+			url: "{% url 'login' %}",
+			type: 'POST',
+			data: {
+				'username':username,
+				'password':password,
+			},
+			cache: false,
+			async: false,
+			dataType: 'json',
+			jsonpCallback: 'callback',
+			success: function(data){
+				if(data['status']=='ERROR'){
+					$('#error_text').text(data['wrong']);
+				};
+				if(data['status']=='SUCCESS'){
+					window.location.reload(true,"{% url 'user_info' %}");
+				}
+			},
+			error: function(xhr){
+				$('#error_text').text('服务器出错');
+				console.log(xhr);
+			}
+		});
+	})
+</script>
+{% endblock %}

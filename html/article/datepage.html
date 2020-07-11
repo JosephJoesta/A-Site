@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block 'title' %}Web|文章{% endblock %}
+
+{% block 'head-extends' %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/article/homepage.css' %}" />
+{% endblock %}
+
+{% block 'content' %}
+<div id='main'>
+	<div id="div-new">
+		<div id="new-head">
+			<p>最新资讯</p>
+			<hr>
+		</div>
+
+		<div id="new-body" class="body">
+			{% for article in articles %}
+	            <span class="glyphicon glyphicon-fire"></span>
+				<span>{{ article.display_num }}</span>
+				<a href="{% url 'article_article' article.id %}">{{ article.title }}</a>
+				<br />
+			{% endfor %} 
+		</div>
+	</div>
+
+	<div id='div-type'>
+		<div id="type-head">
+			<p>分类</p>
+			<hr>
+		</div>
+
+		<div id="type-body">
+			{% for article_type in article_types %}
+				<a href="{% url 'article_type' article_type.id %}">{{ article_type.type_name }}</a>
+				<span class="glyphicon glyphicon-arrow-up"></span>
+				<span>{{ article_type.articles.count }}</span>
+				<br />
+			{% endfor %}
+		</div>
+	</div>
+
+	<div id='div-date'>
+		<div id="date-head">
+			<p>分类</p>
+			<hr>
+		</div>
+
+		<div id="date-body">
+			{% for date,num in date_count.items %}
+				<a href="{% url 'article_date' date.year date.month %}">{{ date|date:'Y-m' }}</a>
+				<span class="glyphicon glyphicon-arrow-up"></span>
+				<span>{{ num }}</span>
+				<br />
+			{% endfor %}
+		</div>
+	</div>
+</div>
+{% endblock %}
